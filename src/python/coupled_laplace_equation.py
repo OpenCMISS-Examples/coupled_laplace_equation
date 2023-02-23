@@ -133,7 +133,7 @@ if len(sys.argv) > 1:
 # Error Handling
 #ErrorHandlingModeSet(iron.ErrorHandlingModes.TRAP_ERROR)
 # Output
-OutputSetOn("Testing")
+iron.OutputSetOn("Testing")
 
 context = iron.Context()
 context.Create(contextUserNumber)
