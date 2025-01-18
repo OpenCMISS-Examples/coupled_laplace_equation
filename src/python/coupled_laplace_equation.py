@@ -958,14 +958,14 @@ boundaryConditions = oc.BoundaryConditions()
 solverEquations.BoundaryConditionsCreateStart(boundaryConditions)
 # Set the first node to 0.0
 firstNodeNumber = 1
-firstNodeDomain = decomposition1.NodeDomainGet(firstNodeNumber,1)
+firstNodeDomain = decomposition1.NodeDomainGet(1,firstNodeNumber)
 if (firstNodeDomain == computationalNodeNumber):
     boundaryConditions.SetNode(dependentField1,oc.FieldVariableTypes.U,1,1,firstNodeNumber,1,oc.BoundaryConditionsTypes.FIXED,0.0)
 # Set the last node to 1.0
 nodes2 = oc.Nodes()
 region2.NodesGet(nodes2)
 lastNodeNumber = nodes2.NumberOfNodesGet()
-lastNodeDomain = decomposition2.NodeDomainGet(lastNodeNumber,1)
+lastNodeDomain = decomposition2.NodeDomainGet(1,lastNodeNumber)
 if (lastNodeDomain == computationalNodeNumber):
     boundaryConditions.SetNode(dependentField2,oc.FieldVariableTypes.U,1,1,lastNodeNumber,1,oc.BoundaryConditionsTypes.FIXED,1.0)
 solverEquations.BoundaryConditionsCreateFinish()
