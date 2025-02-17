@@ -96,7 +96,7 @@ problemUserNumber = 1
 
 # Import the libraries (OpenCMISS,python,numpy,scipy)
 import numpy,csv,time,sys,os,pdb
-from opencmiss.iron import iron
+from opencmiss.opencmiss import OpenCMISS_Python as oc
 
 # Override with command line arguments if need be
 if len(sys.argv) > 1:
@@ -129,35 +129,35 @@ if len(sys.argv) > 1:
             sys.exit('Error: The specified interpolationType of ' + int(sys.argv[3]) + ' is invalid.')
         
 # Diagnostics
-#DiagnosticsSetOn(iron.DiagnosticTypes.ALL,[1,2,3,4,5],"Diagnostics",[""])
+#DiagnosticsSetOn(oc.DiagnosticTypes.ALL,[1,2,3,4,5],"Diagnostics",[""])
 # Error Handling
-#ErrorHandlingModeSet(iron.ErrorHandlingModes.TRAP_ERROR)
+#ErrorHandlingModeSet(oc.ErrorHandlingModes.TRAP_ERROR)
 # Output
-OutputSetOn("Testing")
+oc.OutputSetOn("Testing")
 
-context = iron.Context()
+context = oc.Context()
 context.Create(contextUserNumber)
 
-worldRegion = iron.Region()
+worldRegion = oc.Region()
 context.WorldRegionGet(worldRegion)
 
 # Get the computational nodes info
-computationEnvironment = iron.ComputationEnvironment()
+computationEnvironment = oc.ComputationEnvironment()
 context.ComputationEnvironmentGet(computationEnvironment)
 
-worldWorkGroup = iron.WorkGroup()
+worldWorkGroup = oc.WorkGroup()
 computationEnvironment.WorldWorkGroupGet(worldWorkGroup)
 numberOfComputationalNodes = worldWorkGroup.NumberOfGroupNodesGet()
 computationalNodeNumber = worldWorkGroup.GroupNodeNumberGet()
           
 # (NONE/TIMING/MATRIX/ELEMENT_MATRIX/NODAL_MATRIX)
-equationsSet1OutputType = iron.EquationsSetOutputTypes.PROGRESS
-equationsSet2OutputType = iron.EquationsSetOutputTypes.PROGRESS
-equations1OutputType = iron.EquationsOutputTypes.NONE
-equations2OutputType = iron.EquationsOutputTypes.MATRIX
-interfaceConditionOutputType = iron.InterfaceConditionOutputTypes.PROGRESS
-interfaceEquationsOutputType = iron.EquationsOutputTypes.NONE
-coupledSolverOutputType = iron.SolverOutputTypes.MONITOR
+equationsSet1OutputType = oc.EquationsSetOutputTypes.PROGRESS
+equationsSet2OutputType = oc.EquationsSetOutputTypes.PROGRESS
+equations1OutputType = oc.EquationsOutputTypes.NONE
+equations2OutputType = oc.EquationsOutputTypes.MATRIX
+interfaceConditionOutputType = oc.InterfaceConditionOutputTypes.PROGRESS
+interfaceEquationsOutputType = oc.EquationsOutputTypes.NONE
+coupledSolverOutputType = oc.SolverOutputTypes.MONITOR
 
 if (numberOfGlobalZElements == 0):
     numberOfDimensions = 2
@@ -242,7 +242,7 @@ if (progressDiagnostics):
 if (progressDiagnostics):
     print('  Creating coordinate system 1 ...')
     
-coordinateSystem1 = iron.CoordinateSystem()
+coordinateSystem1 = oc.CoordinateSystem()
 coordinateSystem1.CreateStart(coordinateSystem1UserNumber,context)
 coordinateSystem1.DimensionSet(numberOfDimensions)
 coordinateSystem1.CreateFinish()
@@ -250,7 +250,7 @@ coordinateSystem1.CreateFinish()
 if (progressDiagnostics):
     print('  Creating coordinate system 2 ...')
     
-coordinateSystem2 = iron.CoordinateSystem()
+coordinateSystem2 = oc.CoordinateSystem()
 coordinateSystem2.CreateStart(coordinateSystem2UserNumber,context)
 coordinateSystem2.DimensionSet(numberOfDimensions)
 coordinateSystem2.CreateFinish()
@@ -258,7 +258,7 @@ coordinateSystem2.CreateFinish()
 if (progressDiagnostics):
     print('  Creating interface coordinate system ...')
     
-interfaceCoordinateSystem = iron.CoordinateSystem()
+interfaceCoordinateSystem = oc.CoordinateSystem()
 interfaceCoordinateSystem.CreateStart(coordinateSystemInterfaceUserNumber,context)
 interfaceCoordinateSystem.DimensionSet(numberOfDimensions)
 interfaceCoordinateSystem.CreateFinish()
@@ -276,7 +276,7 @@ if (progressDiagnostics):
 if (progressDiagnostics):
     print('  Creating region 1 ...')
     
-region1 = iron.Region()
+region1 = oc.Region()
 region1.CreateStart(region1UserNumber,worldRegion)
 region1.LabelSet('Region1')
 region1.CoordinateSystemSet(coordinateSystem1)
@@ -285,7 +285,7 @@ region1.CreateFinish()
 if (progressDiagnostics):
     print('  Creating region 2 ...')
     
-region2 = iron.Region()
+region2 = oc.Region()
 region2.CreateStart(region2UserNumber,worldRegion)
 region2.LabelSet('Region2')
 region2.CoordinateSystemSet(coordinateSystem2)
@@ -304,31 +304,31 @@ if (progressDiagnostics):
 if (progressDiagnostics):
     print('  Creating basis 1 ...')
     
-basis1 = iron.Basis()
+basis1 = oc.Basis()
 basis1.CreateStart(basis1UserNumber,context)
 basis1.NumberOfXiSet(numberOfDimensions)
 if (simplex):
-    basis1.TypeSet(iron.BasisTypes.SIMPLEX)
+    basis1.TypeSet(oc.BasisTypes.SIMPLEX)
     if (interpolationType == LINEAR_SIMPLEX):
-        basis1.InterpolationXiSet([iron.BasisInterpolationSpecifications.LINEAR_SIMPLEX]*numberOfDimensions)
+        basis1.InterpolationXiSet([oc.BasisInterpolationSpecifications.LINEAR_SIMPLEX]*numberOfDimensions)
     elif (interpolationType == QUADRATIC_SIMPLEX):
-        basis1.InterpolationXiSet([iron.BasisInterpolationSpecifications.QUADRATIC_SIMPLEX]*numberOfDimensions)
+        basis1.InterpolationXiSet([oc.BasisInterpolationSpecifications.QUADRATIC_SIMPLEX]*numberOfDimensions)
     elif (interpolationType == CUBIC_SIMPLEX):
-        basis1.InterpolationXiSet([iron.BasisInterpolationSpecifications.CUBIC_SIMPLEX]*numberOfDimensions)
+        basis1.InterpolationXiSet([oc.BasisInterpolationSpecifications.CUBIC_SIMPLEX]*numberOfDimensions)
     else:
         print('Invalid interpolation type for simplex')
         exit()
     basis1.QuadratureOrderSet(gaussOrder)
 else:
-    basis1.TypeSet(iron.BasisTypes.LAGRANGE_HERMITE_TP)
+    basis1.TypeSet(oc.BasisTypes.LAGRANGE_HERMITE_TP)
     if (interpolationType == LINEAR_LAGRANGE):
-        basis1.InterpolationXiSet([iron.BasisInterpolationSpecifications.LINEAR_LAGRANGE]*numberOfDimensions)
+        basis1.InterpolationXiSet([oc.BasisInterpolationSpecifications.LINEAR_LAGRANGE]*numberOfDimensions)
     elif (interpolationType == QUADRATIC_LAGRANGE):
-        basis1.InterpolationXiSet([iron.BasisInterpolationSpecifications.QUADRATIC_LAGRANGE]*numberOfDimensions)
+        basis1.InterpolationXiSet([oc.BasisInterpolationSpecifications.QUADRATIC_LAGRANGE]*numberOfDimensions)
     elif (interpolationType == CUBIC_LAGRANGE):
-        basis1.InterpolationXiSet([iron.BasisInterpolationSpecifications.CUBIC_LAGRANGE]*numberOfDimensions)
+        basis1.InterpolationXiSet([oc.BasisInterpolationSpecifications.CUBIC_LAGRANGE]*numberOfDimensions)
     elif (interpolationType == CUBIC_HERMITE):
-        basis1.InterpolationXiSet([iron.BasisInterpolationSpecifications.CUBIC_HERMITE]*numberOfDimensions)
+        basis1.InterpolationXiSet([oc.BasisInterpolationSpecifications.CUBIC_HERMITE]*numberOfDimensions)
     else:
         print('Invalid interpolation type for non simplex')
         exit()
@@ -338,31 +338,31 @@ basis1.CreateFinish()
 if (progressDiagnostics):
     print('  Creating basis 2 ...')
     
-basis2 = iron.Basis()
+basis2 = oc.Basis()
 basis2.CreateStart(basis2UserNumber,context)
 basis2.NumberOfXiSet(numberOfDimensions)
 if (simplex):
-    basis2.TypeSet(iron.BasisTypes.SIMPLEX)
+    basis2.TypeSet(oc.BasisTypes.SIMPLEX)
     if (interpolationType == LINEAR_SIMPLEX):
-        basis2.InterpolationXiSet([iron.BasisInterpolationSpecifications.LINEAR_SIMPLEX]*numberOfDimensions)
+        basis2.InterpolationXiSet([oc.BasisInterpolationSpecifications.LINEAR_SIMPLEX]*numberOfDimensions)
     elif (interpolationType == QUADRATIC_SIMPLEX):
-        basis2.InterpolationXiSet([iron.BasisInterpolationSpecifications.QUADRATIC_SIMPLEX]*numberOfDimensions)
+        basis2.InterpolationXiSet([oc.BasisInterpolationSpecifications.QUADRATIC_SIMPLEX]*numberOfDimensions)
     elif (interpolationType == CUBIC_SIMPLEX):
-        basis2.InterpolationXiSet([iron.BasisInterpolationSpecifications.CUBIC_SIMPLEX]*numberOfDimensions)
+        basis2.InterpolationXiSet([oc.BasisInterpolationSpecifications.CUBIC_SIMPLEX]*numberOfDimensions)
     else:
         print('Invalid interpolation type for simplex')
         exit()
     basis2.QuadratureOrderSet(gaussOrder)
 else:
-    basis2.TypeSet(iron.BasisTypes.LAGRANGE_HERMITE_TP)
+    basis2.TypeSet(oc.BasisTypes.LAGRANGE_HERMITE_TP)
     if (interpolationType == LINEAR_LAGRANGE):
-        basis2.InterpolationXiSet([iron.BasisInterpolationSpecifications.LINEAR_LAGRANGE]*numberOfDimensions)
+        basis2.InterpolationXiSet([oc.BasisInterpolationSpecifications.LINEAR_LAGRANGE]*numberOfDimensions)
     elif (interpolationType == QUADRATIC_LAGRANGE):
-        basis2.InterpolationXiSet([iron.BasisInterpolationSpecifications.QUADRATIC_LAGRANGE]*numberOfDimensions)
+        basis2.InterpolationXiSet([oc.BasisInterpolationSpecifications.QUADRATIC_LAGRANGE]*numberOfDimensions)
     elif (interpolationType == CUBIC_LAGRANGE):
-        basis2.InterpolationXiSet([iron.BasisInterpolationSpecifications.CUBIC_LAGRANGE]*numberOfDimensions)
+        basis2.InterpolationXiSet([oc.BasisInterpolationSpecifications.CUBIC_LAGRANGE]*numberOfDimensions)
     elif (interpolationType == CUBIC_HERMITE):
-        basis2.InterpolationXiSet([iron.BasisInterpolationSpecifications.CUBIC_HERMITE]*numberOfDimensions)
+        basis2.InterpolationXiSet([oc.BasisInterpolationSpecifications.CUBIC_HERMITE]*numberOfDimensions)
     else:
         print('Invalid interpolation type for non simplex')
         exit()
@@ -382,9 +382,9 @@ if (progressDiagnostics):
 if (progressDiagnostics):
     print('  Creating generated mesh 1 ...')
 
-generatedMesh1 = iron.GeneratedMesh()
+generatedMesh1 = oc.GeneratedMesh()
 generatedMesh1.CreateStart(generatedMesh1UserNumber,region1)
-generatedMesh1.TypeSet(iron.GeneratedMeshTypes.REGULAR)
+generatedMesh1.TypeSet(oc.GeneratedMeshTypes.REGULAR)
 generatedMesh1.BasisSet([basis1])
 if (numberOfDimensions == 2):
     generatedMesh1.ExtentSet([width,height])
@@ -392,15 +392,15 @@ if (numberOfDimensions == 2):
 else:
     generatedMesh1.ExtentSet([width,height,length])
     generatedMesh1.NumberOfElementsSet([numberOfGlobalXElements,numberOfGlobalYElements,numberOfGlobalZElements])
-mesh1 = iron.Mesh()
+mesh1 = oc.Mesh()
 generatedMesh1.CreateFinish(mesh1UserNumber,mesh1)
 
 if (progressDiagnostics):
     print('  Creating generated mesh 2 ...')
 
-generatedMesh2 = iron.GeneratedMesh()
+generatedMesh2 = oc.GeneratedMesh()
 generatedMesh2.CreateStart(generatedMesh2UserNumber,region2)
-generatedMesh2.TypeSet(iron.GeneratedMeshTypes.REGULAR)
+generatedMesh2.TypeSet(oc.GeneratedMeshTypes.REGULAR)
 generatedMesh2.BasisSet([basis2])
 if (numberOfDimensions == 2):
     generatedMesh2.OriginSet([width,0.0])
@@ -410,7 +410,7 @@ else:
     generatedMesh2.OriginSet([width,0.0,0.0])
     generatedMesh2.ExtentSet([width,height,length])
     generatedMesh2.NumberOfElementsSet([numberOfGlobalXElements,numberOfGlobalYElements,numberOfGlobalZElements])
-mesh2 = iron.Mesh()
+mesh2 = oc.Mesh()
 generatedMesh2.CreateFinish(mesh2UserNumber,mesh2)
 
 if (progressDiagnostics):
@@ -427,7 +427,7 @@ if (progressDiagnostics):
     print('  Creating interface ...')
     
 # Create an interface between the two meshes
-interface = iron.Interface()
+interface = oc.Interface()
 interface.CreateStart(interfaceUserNumber,worldRegion)
 interface.LabelSet('Interface')
 # Add in the two meshes
@@ -439,31 +439,31 @@ interface.CreateFinish()
 if (progressDiagnostics):
     print('  Creating interface basis ...')
     
-interfaceBasis = iron.Basis()
+interfaceBasis = oc.Basis()
 interfaceBasis.CreateStart(basisInterfaceUserNumber,context)
 interfaceBasis.NumberOfXiSet(numberOfInterfaceDimensions)
 if (simplex):
-    interfaceBasis.TypeSet(iron.BasisTypes.SIMPLEX)
+    interfaceBasis.TypeSet(oc.BasisTypes.SIMPLEX)
     if (interpolationType == LINEAR_SIMPLEX):
-        interfaceBasis.InterpolationXiSet([iron.BasisInterpolationSpecifications.LINEAR_SIMPLEX]*numberOfInterfaceDimensions)
+        interfaceBasis.InterpolationXiSet([oc.BasisInterpolationSpecifications.LINEAR_SIMPLEX]*numberOfInterfaceDimensions)
     elif (interpolationType == QUADRATIC_SIMPLEX):
-        interfaceBasis.InterpolationXiSet([iron.BasisInterpolationSpecifications.QUADRATIC_SIMPLEX]*numberOfInterfaceDimensions)
+        interfaceBasis.InterpolationXiSet([oc.BasisInterpolationSpecifications.QUADRATIC_SIMPLEX]*numberOfInterfaceDimensions)
     elif (interpolationType == CUBIC_SIMPLEX):
-        interfaceBasis.InterpolationXiSet([iron.BasisInterpolationSpecifications.CUBIC_SIMPLEX]*numberOfInterfaceDimensions)
+        interfaceBasis.InterpolationXiSet([oc.BasisInterpolationSpecifications.CUBIC_SIMPLEX]*numberOfInterfaceDimensions)
     else:
         print('Invalid interpolation type for simplex')
         exit()
     interfaceBasis.QuadratureOrderSet(gaussOrder)
 else:
-    interfaceBasis.TypeSet(iron.BasisTypes.LAGRANGE_HERMITE_TP)
+    interfaceBasis.TypeSet(oc.BasisTypes.LAGRANGE_HERMITE_TP)
     if (interpolationType == LINEAR_LAGRANGE):
-        interfaceBasis.InterpolationXiSet([iron.BasisInterpolationSpecifications.LINEAR_LAGRANGE]*numberOfInterfaceDimensions)
+        interfaceBasis.InterpolationXiSet([oc.BasisInterpolationSpecifications.LINEAR_LAGRANGE]*numberOfInterfaceDimensions)
     elif (interpolationType == QUADRATIC_LAGRANGE):
-        interfaceBasis.InterpolationXiSet([iron.BasisInterpolationSpecifications.QUADRATIC_LAGRANGE]*numberOfInterfaceDimensions)
+        interfaceBasis.InterpolationXiSet([oc.BasisInterpolationSpecifications.QUADRATIC_LAGRANGE]*numberOfInterfaceDimensions)
     elif (interpolationType == CUBIC_LAGRANGE):
-        interfaceBasis.InterpolationXiSet([iron.BasisInterpolationSpecifications.CUBIC_LAGRANGE]*numberOfInterfaceDimensions)
+        interfaceBasis.InterpolationXiSet([oc.BasisInterpolationSpecifications.CUBIC_LAGRANGE]*numberOfInterfaceDimensions)
     elif (interpolationType == CUBIC_HERMITE):
-        interfaceBasis.InterpolationXiSet([iron.BasisInterpolationSpecifications.CUBIC_HERMITE]*numberOfInterfaceDimensions)
+        interfaceBasis.InterpolationXiSet([oc.BasisInterpolationSpecifications.CUBIC_HERMITE]*numberOfInterfaceDimensions)
     else:
         print('Invalid interpolation type for non simplex')
         exit()
@@ -473,31 +473,31 @@ interfaceBasis.CreateFinish()
 if (progressDiagnostics):
     print('  Creating interface mapping basis ...')
     
-interfaceMappingBasis = iron.Basis()
+interfaceMappingBasis = oc.Basis()
 interfaceMappingBasis.CreateStart(basisInterfaceMappingUserNumber,context)
 interfaceMappingBasis.NumberOfXiSet(numberOfInterfaceDimensions)
 if (simplex):
-    interfaceMappingBasis.TypeSet(iron.BasisTypes.SIMPLEX)
+    interfaceMappingBasis.TypeSet(oc.BasisTypes.SIMPLEX)
     if (interpolationType == LINEAR_SIMPLEX):
-        interfaceMappingBasis.InterpolationXiSet([iron.BasisInterpolationSpecifications.LINEAR_SIMPLEX]*numberOfInterfaceDimensions)
+        interfaceMappingBasis.InterpolationXiSet([oc.BasisInterpolationSpecifications.LINEAR_SIMPLEX]*numberOfInterfaceDimensions)
     elif (interpolationType == QUADRATIC_SIMPLEX):
-        interfaceMappingBasis.InterpolationXiSet([iron.BasisInterpolationSpecifications.QUADRATIC_SIMPLEX]*numberOfInterfaceDimensions)
+        interfaceMappingBasis.InterpolationXiSet([oc.BasisInterpolationSpecifications.QUADRATIC_SIMPLEX]*numberOfInterfaceDimensions)
     elif (interpolationType == CUBIC_SIMPLEX):
-        interfaceMappingBasis.InterpolationXiSet([iron.BasisInterpolationSpecifications.CUBIC_SIMPLEX]*numberOfInterfaceDimensions)
+        interfaceMappingBasis.InterpolationXiSet([oc.BasisInterpolationSpecifications.CUBIC_SIMPLEX]*numberOfInterfaceDimensions)
     else:
         print('Invalid interpolation type for simplex')
         exit()
     interfaceMappingBasis.QuadratureOrderSet(gaussOrder)
 else:
-    interfaceMappingBasis.TypeSet(iron.BasisTypes.LAGRANGE_HERMITE_TP)
+    interfaceMappingBasis.TypeSet(oc.BasisTypes.LAGRANGE_HERMITE_TP)
     if (interpolationType == LINEAR_LAGRANGE):
-        interfaceMappingBasis.InterpolationXiSet([iron.BasisInterpolationSpecifications.LINEAR_LAGRANGE]*numberOfInterfaceDimensions)
+        interfaceMappingBasis.InterpolationXiSet([oc.BasisInterpolationSpecifications.LINEAR_LAGRANGE]*numberOfInterfaceDimensions)
     elif (interpolationType == QUADRATIC_LAGRANGE):
-        interfaceMappingBasis.InterpolationXiSet([iron.BasisInterpolationSpecifications.QUADRATIC_LAGRANGE]*numberOfInterfaceDimensions)
+        interfaceMappingBasis.InterpolationXiSet([oc.BasisInterpolationSpecifications.QUADRATIC_LAGRANGE]*numberOfInterfaceDimensions)
     elif (interpolationType == CUBIC_LAGRANGE):
-        interfaceMappingBasis.InterpolationXiSet([iron.BasisInterpolationSpecifications.CUBIC_LAGRANGE]*numberOfInterfaceDimensions)
+        interfaceMappingBasis.InterpolationXiSet([oc.BasisInterpolationSpecifications.CUBIC_LAGRANGE]*numberOfInterfaceDimensions)
     elif (interpolationType == CUBIC_HERMITE):
-        interfaceMappingBasis.InterpolationXiSet([iron.BasisInterpolationSpecifications.CUBIC_HERMITE]*numberOfInterfaceDimensions)
+        interfaceMappingBasis.InterpolationXiSet([oc.BasisInterpolationSpecifications.CUBIC_HERMITE]*numberOfInterfaceDimensions)
     else:
         print('Invalid interpolation type for non simplex')
         exit()
@@ -507,9 +507,9 @@ interfaceMappingBasis.CreateFinish()
 if (progressDiagnostics):
     print('  Creating interface generated mesh ...')
 
-interfaceGeneratedMesh = iron.GeneratedMesh()
+interfaceGeneratedMesh = oc.GeneratedMesh()
 interfaceGeneratedMesh.CreateStartInterface(generatedMeshInterfaceUserNumber,interface)
-interfaceGeneratedMesh.TypeSet(iron.GeneratedMeshTypes.REGULAR)
+interfaceGeneratedMesh.TypeSet(oc.GeneratedMeshTypes.REGULAR)
 interfaceGeneratedMesh.BasisSet([interfaceBasis])
 if (numberOfDimensions == 2):
     interfaceGeneratedMesh.OriginSet([width,0.0])
@@ -519,7 +519,7 @@ else:
     interfaceGeneratedMesh.OriginSet([width,0.0,0.0])
     interfaceGeneratedMesh.ExtentSet([0.0,height,length])
     interfaceGeneratedMesh.NumberOfElementsSet([numberOfGlobalYElements,numberOfGlobalZElements])
-interfaceMesh = iron.Mesh()
+interfaceMesh = oc.Mesh()
 interfaceGeneratedMesh.CreateFinish(meshInterfaceUserNumber,interfaceMesh)
 
 if (progressDiagnostics):
@@ -533,7 +533,7 @@ if (progressDiagnostics):
     print('Interface mesh connectivity ...')
 
 # Couple the interface meshes
-interfaceMeshConnectivity = iron.InterfaceMeshConnectivity()
+interfaceMeshConnectivity = oc.InterfaceMeshConnectivity()
 interfaceMeshConnectivity.CreateStart(interface,interfaceMesh)
 interfaceMeshConnectivity.BasisSet(interfaceBasis)
 if (numberOfDimensions == 2):
@@ -598,7 +598,7 @@ if (progressDiagnostics):
     print('  Creating decomposition 1 ...')
 
 # Create a decomposition for mesh 1
-decomposition1 = iron.Decomposition()
+decomposition1 = oc.Decomposition()
 decomposition1.CreateStart(decomposition1UserNumber,mesh1)
 decomposition1.CalculateFacesSet(True)
 decomposition1.CreateFinish()
@@ -607,7 +607,7 @@ if (progressDiagnostics):
     print('  Creating decomposition 2 ...')
 
 # Create a decomposition for mesh 2
-decomposition2 = iron.Decomposition()
+decomposition2 = oc.Decomposition()
 decomposition2.CreateStart(decomposition2UserNumber,mesh2)
 decomposition2.CalculateFacesSet(True)
 decomposition2.CreateFinish()
@@ -616,7 +616,7 @@ if (progressDiagnostics):
     print('  Creating interface decomposition ...')
 
 # Create a decomposition for interface mesh 
-interfaceDecomposition = iron.Decomposition()
+interfaceDecomposition = oc.Decomposition()
 interfaceDecomposition.CreateStart(decompositionInterfaceUserNumber,interfaceMesh)
 interfaceDecomposition.CreateFinish()
 
@@ -630,12 +630,12 @@ if (progressDiagnostics):
 if (progressDiagnostics):
     print('Decomposer ...')
               
-decomposer = iron.Decomposer()
+decomposer = oc.Decomposer()
 decomposer.CreateStart(decomposerUserNumber,worldRegion,worldWorkGroup)
 mesh1DecompositionIndex = decomposer.DecompositionAdd(decomposition1)
 mesh2DecompositionIndex = decomposer.DecompositionAdd(decomposition2)
 interfaceDecompositionIndex = decomposer.DecompositionAdd(interfaceDecomposition)
-decomposer.OutputTypeSet(iron.DecomposerOutputTypes.ALL)    
+decomposer.OutputTypeSet(oc.DecomposerOutputTypes.ALL)    
 decomposer.CreateFinish()
 if (progressDiagnostics):
     print('Decomposer ... Done')
@@ -651,19 +651,19 @@ if (progressDiagnostics):
     print('  Creating geometric field 1 ...')
 
 # Start to create a default (geometric) field on region 1
-geometricField1 = iron.Field()
+geometricField1 = oc.Field()
 geometricField1.CreateStart(geometricField1UserNumber,region1)
 # Set the decomposition to use
 geometricField1.DecompositionSet(decomposition1)
 # Set the scaling to use
 if (interpolationType == CUBIC_HERMITE):
-    geometricField1.ScalingTypeSet(iron.FieldScalingTypes.ARITHMETIC_MEAN)
+    geometricField1.ScalingTypeSet(oc.FieldScalingTypes.ARITHMETIC_MEAN)
 else:
-    geometricField1.ScalingTypeSet(iron.FieldScalingTypes.NONE)
-geometricField1.VariableLabelSet(iron.FieldVariableTypes.U,'Geometry1Variable')
+    geometricField1.ScalingTypeSet(oc.FieldScalingTypes.NONE)
+geometricField1.VariableLabelSet(oc.FieldVariableTypes.U,'Geometry1Variable')
 # Set the domain to be used by the field components.
 for componentIdx in range(1,numberOfDimensions+1):
-    geometricField1.ComponentMeshComponentSet(iron.FieldVariableTypes.U,componentIdx,1)
+    geometricField1.ComponentMeshComponentSet(oc.FieldVariableTypes.U,componentIdx,1)
 # Finish creating the field
 geometricField1.CreateFinish()
 
@@ -671,19 +671,19 @@ if (progressDiagnostics):
     print('  Creating geometric field 2 ...')
 
 # Start to create a default (geometric) field on region 2
-geometricField2 = iron.Field()
+geometricField2 = oc.Field()
 geometricField2.CreateStart(geometricField2UserNumber,region2)
 # Set the decomposition to use
 geometricField2.DecompositionSet(decomposition2)
 # Set the scaling to use
 if (interpolationType == CUBIC_HERMITE):
-    geometricField2.ScalingTypeSet(iron.FieldScalingTypes.ARITHMETIC_MEAN)
+    geometricField2.ScalingTypeSet(oc.FieldScalingTypes.ARITHMETIC_MEAN)
 else:
-    geometricField2.ScalingTypeSet(iron.FieldScalingTypes.NONE)
-geometricField2.VariableLabelSet(iron.FieldVariableTypes.U,'Geometry2Variable')
+    geometricField2.ScalingTypeSet(oc.FieldScalingTypes.NONE)
+geometricField2.VariableLabelSet(oc.FieldVariableTypes.U,'Geometry2Variable')
 # Set the domain to be used by the field components.
 for componentIdx in range(1,numberOfDimensions+1):
-    geometricField2.ComponentMeshComponentSet(iron.FieldVariableTypes.U,componentIdx,1)
+    geometricField2.ComponentMeshComponentSet(oc.FieldVariableTypes.U,componentIdx,1)
 # Finish creating the field
 geometricField2.CreateFinish()
 
@@ -691,19 +691,19 @@ if (progressDiagnostics):
     print('  Creating interface geometric field ...')
 
 # Start to create a default (geometric) field on the interface
-interfaceGeometricField = iron.Field()
+interfaceGeometricField = oc.Field()
 interfaceGeometricField.CreateStartInterface(geometricFieldInterfaceUserNumber,interface)
 # Set the decomposition to use
 interfaceGeometricField.DecompositionSet(interfaceDecomposition)
 # Set the scaling to use
 if (interpolationType == CUBIC_HERMITE):
-    interfaceGeometricField.ScalingTypeSet(iron.FieldScalingTypes.ARITHMETIC_MEAN)
+    interfaceGeometricField.ScalingTypeSet(oc.FieldScalingTypes.ARITHMETIC_MEAN)
 else:
-    interfaceGeometricField.ScalingTypeSet(iron.FieldScalingTypes.NONE)
-interfaceGeometricField.VariableLabelSet(iron.FieldVariableTypes.U,'InterfaceGeometryVariable')
+    interfaceGeometricField.ScalingTypeSet(oc.FieldScalingTypes.NONE)
+interfaceGeometricField.VariableLabelSet(oc.FieldVariableTypes.U,'InterfaceGeometryVariable')
 # Set the domain to be used by the field components.
 for componentIdx in range(1,numberOfDimensions+1):
-    interfaceGeometricField.ComponentMeshComponentSet(iron.FieldVariableTypes.U,componentIdx,1)
+    interfaceGeometricField.ComponentMeshComponentSet(oc.FieldVariableTypes.U,componentIdx,1)
 # Finish creating the field
 interfaceGeometricField.CreateFinish()
 
@@ -716,17 +716,17 @@ if (progressDiagnostics):
     print('Geometric field ... Done')
     
 # Export the fields
-fields1 = iron.Fields()
+fields1 = oc.Fields()
 fields1.CreateRegion(region1)
 fields1.NodesExport("CoupledLaplace1","FORTRAN")
 fields1.ElementsExport("CoupledLaplace1","FORTRAN")
 
-fields2 = iron.Fields()
+fields2 = oc.Fields()
 fields2.CreateRegion(region2)
 fields2.NodesExport("CoupledLaplace2","FORTRAN")
 fields2.ElementsExport("CoupledLaplace2","FORTRAN")
 
-interfaceFields = iron.Fields()
+interfaceFields = oc.Fields()
 interfaceFields.CreateInterface(interface)
 interfaceFields.NodesExport("CoupledLaplaceInterface","FORTRAN")
 interfaceFields.ElementsExport("CoupledLaplaceInterface","FORTRAN")
@@ -741,11 +741,11 @@ if (progressDiagnostics):
 if (progressDiagnostics):
     print('  Creating equations set 1 ...')
 
-equationsSetField1 = iron.Field()
-equationsSet1 = iron.EquationsSet()
-equationsSet1Specification = [ iron.EquationsSetClasses.CLASSICAL_FIELD,
-                               iron.EquationsSetTypes.LAPLACE_EQUATION,
-                               iron.EquationsSetSubtypes.STANDARD_LAPLACE ]
+equationsSetField1 = oc.Field()
+equationsSet1 = oc.EquationsSet()
+equationsSet1Specification = [ oc.EquationsSetClasses.CLASSICAL_FIELD,
+                               oc.EquationsSetTypes.LAPLACE_EQUATION,
+                               oc.EquationsSetSubtypes.STANDARD_LAPLACE ]
 equationsSet1.CreateStart(equationsSet1UserNumber,region1,geometricField1,equationsSet1Specification, \
                           equationsSetField1UserNumber,equationsSetField1)
 equationsSet1.OutputTypeSet(equationsSet1OutputType)
@@ -754,11 +754,11 @@ equationsSet1.CreateFinish()
 if (progressDiagnostics):
     print('  Creating equations set 2 ...')
 
-equationsSetField2 = iron.Field()
-equationsSet2 = iron.EquationsSet()
-equationsSet2Specification = [ iron.EquationsSetClasses.CLASSICAL_FIELD,
-                               iron.EquationsSetTypes.LAPLACE_EQUATION,
-                               iron.EquationsSetSubtypes.STANDARD_LAPLACE ]
+equationsSetField2 = oc.Field()
+equationsSet2 = oc.EquationsSet()
+equationsSet2Specification = [ oc.EquationsSetClasses.CLASSICAL_FIELD,
+                               oc.EquationsSetTypes.LAPLACE_EQUATION,
+                               oc.EquationsSetSubtypes.STANDARD_LAPLACE ]
 equationsSet2.CreateStart(equationsSet1UserNumber,region2,geometricField2,equationsSet2Specification, \
                           equationsSetField2UserNumber,equationsSetField2)
 equationsSet2.OutputTypeSet(equationsSet1OutputType)
@@ -777,14 +777,14 @@ if (progressDiagnostics):
 if (progressDiagnostics):
     print('  Creating dependent field 1 ...')
 
-dependentField1 = iron.Field()
+dependentField1 = oc.Field()
 equationsSet1.DependentCreateStart(dependentField1UserNumber,dependentField1)
 equationsSet1.DependentCreateFinish()
 
 if (progressDiagnostics):
     print('  Creating dependent field 2 ...')
 
-dependentField2 = iron.Field()
+dependentField2 = oc.Field()
 equationsSet2.DependentCreateStart(dependentField2UserNumber,dependentField2)
 equationsSet2.DependentCreateFinish()
 
@@ -801,20 +801,20 @@ if (progressDiagnostics):
 if (progressDiagnostics):
     print('  Creating eqations 1 ...')
 
-equations1 = iron.Equations()
+equations1 = oc.Equations()
 equationsSet1.EquationsCreateStart(equations1)
-#equations1.SparsityTypeSet(iron.EquationsSparsityTypes.FULL)
-equations1.SparsityTypeSet(iron.EquationsSparsityTypes.SPARSE)
+#equations1.SparsityTypeSet(oc.EquationsSparsityTypes.FULL)
+equations1.SparsityTypeSet(oc.EquationsSparsityTypes.SPARSE)
 equations1.OutputTypeSet(equations1OutputType)
 equationsSet1.EquationsCreateFinish()
 
 if (progressDiagnostics):
     print('  Creating eqations 2 ...')
 
-equations2 = iron.Equations()
+equations2 = oc.Equations()
 equationsSet2.EquationsCreateStart(equations2)
-#equations2.SparsityTypeSet(iron.EquationsSparsityTypes.FULL)
-equations2.SparsityTypeSet(iron.EquationsSparsityTypes.SPARSE)
+#equations2.SparsityTypeSet(oc.EquationsSparsityTypes.FULL)
+equations2.SparsityTypeSet(oc.EquationsSparsityTypes.SPARSE)
 equations2.OutputTypeSet(equations1OutputType)
 equationsSet2.EquationsCreateFinish()
 
@@ -829,15 +829,15 @@ if (progressDiagnostics):
     print('Interface Condition ...')
     
 # Create an interface condition between the two equations sets
-interfaceCondition = iron.InterfaceCondition()
+interfaceCondition = oc.InterfaceCondition()
 interfaceCondition.CreateStart(interfaceConditionUserNumber,interface,interfaceGeometricField)
 # Specify the method for the interface condition
-interfaceCondition.MethodSet(iron.InterfaceConditionMethods.LAGRANGE_MULTIPLIERS)
+interfaceCondition.MethodSet(oc.InterfaceConditionMethods.LAGRANGE_MULTIPLIERS)
 # Specify the type of interface condition operator
-interfaceCondition.OperatorSet(iron.InterfaceConditionOperators.FIELD_CONTINUITY)
+interfaceCondition.OperatorSet(oc.InterfaceConditionOperators.FIELD_CONTINUITY)
 # Add in the dependent variables from the equations sets
-interfaceCondition.DependentVariableAdd(mesh1Index,equationsSet1,iron.FieldVariableTypes.U)
-interfaceCondition.DependentVariableAdd(mesh2Index,equationsSet2,iron.FieldVariableTypes.U)
+interfaceCondition.DependentVariableAdd(mesh1Index,equationsSet1,oc.FieldVariableTypes.U)
+interfaceCondition.DependentVariableAdd(mesh2Index,equationsSet2,oc.FieldVariableTypes.U)
 # Set the label
 interfaceCondition.LabelSet("InterfaceCondition")
 # Set the output type
@@ -849,9 +849,9 @@ if (progressDiagnostics):
     print('  Creating Lagrange field ...')
 
 # Create the Lagrange multipliers field
-interfaceLagrangeField = iron.Field()
+interfaceLagrangeField = oc.Field()
 interfaceCondition.LagrangeFieldCreateStart(lagrangeFieldUserNumber,interfaceLagrangeField)
-interfaceLagrangeField.VariableLabelSet(iron.FieldVariableTypes.U,'InterfaceLagrange')
+interfaceLagrangeField.VariableLabelSet(oc.FieldVariableTypes.U,'InterfaceLagrange')
 # Finish the Lagrange multipliers field
 interfaceCondition.LagrangeFieldCreateFinish()
     
@@ -859,11 +859,11 @@ if (progressDiagnostics):
     print('  Creating interface equations ...')
 
 # Create the interface condition equations
-interfaceEquations = iron.InterfaceEquations()
+interfaceEquations = oc.InterfaceEquations()
 interfaceCondition.EquationsCreateStart(interfaceEquations)
 # Set the interface equations sparsity
-#interfaceEquations.sparsityType = iron.EquationsSparsityTypes.FULL
-interfaceEquations.sparsityType = iron.EquationsSparsityTypes.SPARSE
+#interfaceEquations.sparsityType = oc.EquationsSparsityTypes.FULL
+interfaceEquations.sparsityType = oc.EquationsSparsityTypes.SPARSE
 # Set the interface equations output
 interfaceEquations.outputType = interfaceEquationsOutputType
 # Finish creating the interface equations
@@ -880,10 +880,10 @@ if (progressDiagnostics):
     print('Problem ...')
 
 # Create a problem
-problem = iron.Problem()
-problemSpecification = [ iron.ProblemClasses.CLASSICAL_FIELD,
-                         iron.ProblemTypes.LAPLACE_EQUATION,
-                         iron.ProblemSubtypes.STANDARD_LAPLACE ]
+problem = oc.Problem()
+problemSpecification = [ oc.ProblemClasses.CLASSICAL_FIELD,
+                         oc.ProblemTypes.LAPLACE_EQUATION,
+                         oc.ProblemSubtypes.STANDARD_LAPLACE ]
 problem.CreateStart(problemUserNumber,context,problemSpecification)
 problem.CreateFinish()
 
@@ -898,7 +898,7 @@ if (progressDiagnostics):
     print('Control Loops ...')
 
 # Create the problem control loop
-controlLoop = iron.ControlLoop()
+controlLoop = oc.ControlLoop()
 problem.ControlLoopCreateStart()
 problem.ControlLoopCreateFinish()
 
@@ -912,12 +912,12 @@ if (progressDiagnostics):
 if (progressDiagnostics):
     print('Solvers ...')
 
-coupledSolver = iron.Solver()
+coupledSolver = oc.Solver()
 problem.SolversCreateStart()
-problem.SolverGet([iron.ControlLoopIdentifiers.NODE],1,coupledSolver)
+problem.SolverGet([oc.ControlLoopIdentifiers.NODE],1,coupledSolver)
 coupledSolver.OutputTypeSet(coupledSolverOutputType)
-coupledSolver.LinearTypeSet(iron.LinearSolverTypes.DIRECT)
-coupledSolver.LibraryTypeSet(iron.SolverLibraries.MUMPS)
+coupledSolver.LinearTypeSet(oc.LinearSolverTypes.DIRECT)
+coupledSolver.LibraryTypeSet(oc.SolverLibraries.MUMPS)
 # Finish the creation of the problem solver
 problem.SolversCreateFinish()
 
@@ -932,11 +932,11 @@ if (progressDiagnostics):
     print('Solver Equations ...')
 
 # Start the creation of the problem solver equations
-solverEquations = iron.SolverEquations()
+solverEquations = oc.SolverEquations()
 problem.SolverEquationsCreateStart()
 coupledSolver.SolverEquationsGet(solverEquations)
-#solverEquations.SparsityTypeSet(iron.SolverEquationsSparsityTypes.FULL)
-solverEquations.SparsityTypeSet(iron.SolverEquationsSparsityTypes.SPARSE)
+#solverEquations.SparsityTypeSet(oc.SolverEquationsSparsityTypes.FULL)
+solverEquations.SparsityTypeSet(oc.SolverEquationsSparsityTypes.SPARSE)
 solverEquations1Index = solverEquations.EquationsSetAdd(equationsSet1)
 solverEquations2Index = solverEquations.EquationsSetAdd(equationsSet2)
 interfaceConditionIndex = solverEquations.InterfaceConditionAdd(interfaceCondition)
@@ -954,20 +954,20 @@ if (progressDiagnostics):
     print('Boundary Conditions ...')
     
 # Start the creation of the boundary conditions
-boundaryConditions = iron.BoundaryConditions()
+boundaryConditions = oc.BoundaryConditions()
 solverEquations.BoundaryConditionsCreateStart(boundaryConditions)
 # Set the first node to 0.0
 firstNodeNumber = 1
-firstNodeDomain = decomposition1.NodeDomainGet(firstNodeNumber,1)
+firstNodeDomain = decomposition1.NodeDomainGet(1,firstNodeNumber)
 if (firstNodeDomain == computationalNodeNumber):
-    boundaryConditions.SetNode(dependentField1,iron.FieldVariableTypes.U,1,1,firstNodeNumber,1,iron.BoundaryConditionsTypes.FIXED,0.0)
+    boundaryConditions.SetNode(dependentField1,oc.FieldVariableTypes.U,1,1,firstNodeNumber,1,oc.BoundaryConditionsTypes.FIXED,0.0)
 # Set the last node to 1.0
-nodes2 = iron.Nodes()
+nodes2 = oc.Nodes()
 region2.NodesGet(nodes2)
 lastNodeNumber = nodes2.NumberOfNodesGet()
-lastNodeDomain = decomposition2.NodeDomainGet(lastNodeNumber,1)
+lastNodeDomain = decomposition2.NodeDomainGet(1,lastNodeNumber)
 if (lastNodeDomain == computationalNodeNumber):
-    boundaryConditions.SetNode(dependentField2,iron.FieldVariableTypes.U,1,1,lastNodeNumber,1,iron.BoundaryConditionsTypes.FIXED,1.0)
+    boundaryConditions.SetNode(dependentField2,oc.FieldVariableTypes.U,1,1,lastNodeNumber,1,oc.BoundaryConditionsTypes.FIXED,1.0)
 solverEquations.BoundaryConditionsCreateFinish()
 
 if (progressDiagnostics):
@@ -989,17 +989,17 @@ if (progressDiagnostics):
     print('Problem solved!')
 
 # Export the fields
-fields1 = iron.Fields()
+fields1 = oc.Fields()
 fields1.CreateRegion(region1)
 fields1.NodesExport("CoupledLaplace1","FORTRAN")
 fields1.ElementsExport("CoupledLaplace1","FORTRAN")
 
-fields2 = iron.Fields()
+fields2 = oc.Fields()
 fields2.CreateRegion(region2)
 fields2.NodesExport("CoupledLaplace2","FORTRAN")
 fields2.ElementsExport("CoupledLaplace2","FORTRAN")
 
-interfaceFields = iron.Fields()
+interfaceFields = oc.Fields()
 interfaceFields.CreateInterface(interface)
 interfaceFields.NodesExport("CoupledLaplaceInterface","FORTRAN")
 interfaceFields.ElementsExport("CoupledLaplaceInterface","FORTRAN")
